@@ -1,7 +1,4 @@
-// Load environment variables from .env file
-// We use __dirname so dotenv always finds backend/.env
-// regardless of which folder you run "npm start" from
-require("dotenv").config({ path: require("path").join(__dirname, ".env") });
+require("dotenv").config();
 
 const express = require("express");
 const fetch = require("node-fetch");
@@ -14,7 +11,6 @@ const PORT = process.env.PORT || 3000;
 app.use(express.json());
 
 // Serve the frontend folder as static files
-// This means visiting http://localhost:3000 loads frontend/index.html
 app.use(express.static(path.join(__dirname, "../frontend")));
 
 // POST /chat — the only API endpoint in this app
@@ -35,7 +31,6 @@ app.post("/chat", async (req, res) => {
 
   try {
     // Call the Groq API
-    // Groq uses the same request format as OpenAI, so this pattern is transferable
     const response = await fetch(
       "https://api.groq.com/openai/v1/chat/completions",
       {
@@ -45,13 +40,12 @@ app.post("/chat", async (req, res) => {
           Authorization: `Bearer ${process.env.GROQ_API_KEY}`,
         },
         body: JSON.stringify({
-          model: "llama-3.1-8b-instant", // Free model available on Groq
+          model: "llama-3.1-8b-instant",
           messages: messages,
         }),
       }
     );
 
-    // If Groq returned an error status, handle it clearly
     if (!response.ok) {
       const errorData = await response.json();
       console.error("Groq API error:", errorData);
@@ -61,14 +55,9 @@ app.post("/chat", async (req, res) => {
     }
 
     const data = await response.json();
-
-    // Extract the reply text from Groq's response
     const reply = data.choices[0].message.content;
-
-    // Return the reply to the frontend
     return res.json({ reply });
   } catch (err) {
-    // Network error or unexpected failure
     console.error("Server error:", err.message);
     return res
       .status(500)
@@ -77,5 +66,5 @@ app.post("/chat", async (req, res) => {
 });
 
 app.listen(PORT, () => {
-  console.log(`Server running at http://localhost:${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
