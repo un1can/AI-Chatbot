@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="A premium AI chat application" />
+    <title>AI Chatbot</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+
+    <div class="app-container">
+      
+      <!-- Sidebar / Navigation -->
+      <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+          <button class="new-chat-btn" id="newChatBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"></line><line x1="5" y1="12" x2="19" y2="12"></line></svg>
+            New Chat
+          </button>
+          <button class="sidebar-toggle-mobile" id="closeSidebarBtn">
+             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"/><path d="m6 6 12 12"/></svg>
+          </button>
+        </div>
+
+        <div class="search-container">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="search-icon"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+          <input type="text" class="search-input" id="searchChats" placeholder="Search chats..." />
+        </div>
+
+        <div class="chat-history-list" id="chatHistoryList">
+          <!-- Chat history items will be injected here -->
+        </div>
+
+        <div class="sidebar-footer">
+          <button class="settings-trigger" id="settingsAutoTrigger">
+            <div class="user-avatar">
+              <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+            </div>
+            <div class="user-info">
+              <span class="user-name">User Profile</span>
+              <span class="user-status">Settings & Controls</span>
+            </div>
+          </button>
+        </div>
+      </aside>
+
+      <!-- Main Chat Area -->
+      <main class="main-content">
+        <!-- Header -->
+        <header class="main-header">
+          <button class="sidebar-toggle" id="openSidebarBtn">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+          </button>
+          <div class="header-center">
+            <h1 class="chat-title" id="currentChatTitle">AI Chatbot</h1>
+          </div>
+          <div class="header-right">
+             <!-- Placeholder for future actions -->
+          </div>
+        </header>
+
+        <!-- Chat Output & Empty State -->
+        <div class="chat-container">
+          
+          <div class="empty-state" id="emptyState">
+            <div class="hero-logo">
+               <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"></polygon><polyline points="2 17 12 22 22 17"></polyline><polyline points="2 12 12 17 22 12"></polyline></svg>
+            </div>
+            <h2>How can I help you today?</h2>
+            <p>I am your intelligent assistant. Let's start a conversation.</p>
+            <div class="suggestion-chips">
+              <button class="chip" onclick="fillInput('Explain quantum computing in simple terms')">Explain quantum computing</button>
+              <button class="chip" onclick="fillInput('Write a playful poem about a cat')">Write a poem about a cat</button>
+              <button class="chip" onclick="fillInput('How do I build a minimal web app?')">How to build a web app</button>
+            </div>
+          </div>
+
+          <div class="chat-messages" id="chatMessages">
+            <!-- Messages dynamically injected here -->
+          </div>
+          
+          <!-- Typing indicator (hidden by default) -->
+          <div class="typing-indicator hidden" id="typingIndicator">
+            <div class="bubble outline">
+              <span class="dot"></span><span class="dot"></span><span class="dot"></span>
+            </div>
+          </div>
+
+          <div class="error-banner hidden" id="errorBanner"></div>
+        </div>
+
+        <!-- Input Box -->
+        <div class="input-wrapper">
+          <div class="input-container">
+            <textarea
+              id="userInput"
+              class="chat-input"
+              placeholder="Message..."
+              rows="1"
+              aria-label="Your message"
+            ></textarea>
+            <button id="sendBtn" class="send-btn" aria-label="Send message">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor" width="20" height="20">
+                <path d="M3.478 2.404a.75.75 0 0 0-.926.941l2.432 7.905H13.5a.75.75 0 0 1 0 1.5H4.984l-2.432 7.905a.75.75 0 0 0 .926.94 60.519 60.519 0 0 0 18.445-8.986.75.75 0 0 0 0-1.218A60.517 60.517 0 0 0 3.478 2.404Z" />
+              </svg>
+            </button>
+          </div>
+          <div class="input-footer">
+            AI Chatbot can make mistakes. Consider verifying important information.
+          </div>
+        </div>
+
+      </main>
+
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal-overlay hidden" id="settingsModal">
+      <div class="modal">
+        <div class="modal-header">
+          <h2>Settings</h2>
+          <button class="close-modal" id="closeSettingsBtn">&times;</button>
+        </div>
+        <div class="modal-content">
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-title">Appearance</span>
+              <span class="setting-desc">Toggle between Light and Dark mode</span>
+            </div>
+            <label class="theme-switch">
+              <input type="checkbox" id="themeToggle" checked />
+              <span class="slider round"></span>
+            </label>
+          </div>
+          <div class="setting-item">
+            <div class="setting-info">
+              <span class="setting-title">Export Conversation</span>
+              <span class="setting-desc">Download current chat as JSON</span>
+            </div>
+            <button class="action-btn" id="exportChatBtn">Export</button>
+          </div>
+          <div class="setting-item danger-zone">
+            <div class="setting-info">
+              <span class="setting-title">Clear All History</span>
+              <span class="setting-desc">Permanently delete all chat sessions</span>
+            </div>
+            <button class="action-btn danger" id="clearHistoryBtn">Clear Data</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <script src="script.js"></script>
+  </body>
+</html>
