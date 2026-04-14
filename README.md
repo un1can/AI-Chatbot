@@ -58,7 +58,7 @@ hogwarts/
 
 ```bash
 git clone <your-repo-url>
-cd hogwarts
+cd AI-Chatbot
 ```
 
 ### 2. Install dependencies
